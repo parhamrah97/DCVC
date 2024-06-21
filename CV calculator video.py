@@ -1,9 +1,11 @@
 import cv2 as cv
 import numpy as np
-import matplotlib.pyplot as plt
 
 # Capture video from the camera (0 corresponds to the default camera)
 cap = cv.VideoCapture(1)
+
+# List to store droplet sizes
+droplet_sizes = []
 
 while True:
     # Read a frame from the video capture
@@ -12,9 +14,6 @@ while True:
     if not ret:
         print("Failed to capture frame")
         break
-
-    # Display the live video
-    cv.imshow("Live Video", frame)
 
     # Convert the frame to grayscale
     gray_img = cv.cvtColor(frame, cv.COLOR_BGR2GRAY)
@@ -35,17 +34,27 @@ while True:
             # Draw the center of the circle
             cv.circle(frame, (i[0], i[1]), 2, (0, 0, 255), 3)
 
-        # Display the image with detected circles
-        cv.imshow("Circles Detected", frame)
+            # Append the radius of the detected droplet to the list
+            droplet_sizes.append(i[2])
 
-        # Calculate the coefficient of variation
-        lst = [r for (_, _, r) in circles[0, :]]
-        cv_value = np.std(lst) / np.mean(lst) * 100
-        print('Coefficient of variation of droplets: ', cv_value)
+    # Display the live video with detected circles
+    cv.imshow("Circles Detected", frame)
 
     # Break the loop when 'q' key is pressed
     if cv.waitKey(1) & 0xFF == ord('q'):
         break
+
+# Calculate the coefficient of variation if droplets were detected
+if droplet_sizes:
+    cv_value = np.std(droplet_sizes) / np.mean(droplet_sizes) * 100
+    print('Coefficient of Variation of droplets:', cv_value)
+else:
+    print("No droplets detected")
+
+# Release the video capture object and close all windows
+cap.release()
+cv.destroyAllWindows()
+
 
 # Release the video capture object and close all windows
 cap.release()
