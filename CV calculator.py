@@ -2,7 +2,7 @@ import cv2 as cv
 import numpy as np
 import matplotlib.pyplot as plt
 
-img = cv.imread('D:\پایان نامه\نتایج\centrifuge setup\60um 1400rpm\20231205_201455.jpg' )
+img = cv.imread('')
 plt.imshow(img)
 # cv.imshow("Image", img)
 # cv.waitKey(0)
